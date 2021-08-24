@@ -1,1 +1,45 @@
-<h1> hello! </h1>
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script>
+    $(document).ready(function() {
+        $("#pwd").keypress(function(e) {
+            if (e.keyCode==13){
+                $("#but").click();
+            }
+        });
+    });
+    function check_pwd() {
+        const msgUint8 = new TextEncoder().encode($("#pwd").val());
+        $("#pwd").val("");
+        const digest = crypto.subtle.digest("SHA-256", msgUint8);
+        digest.then(function(res) {
+            var hash_bar = res;
+            const hashArray = Array.from(new Uint8Array(hash_bar));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            if (hashHex === "3601364c58da0ca4286651edff51dd0dbe8fafdeef5df3d827c0f68b06b10244") {
+                $("#sad").hide()
+                $("#shrug").show();
+                $("#response").text("got it!");
+                $("#response").show();
+            }
+            else {
+                $("#sad").show();
+                $("#shrug").hide();
+                $("#response").text("Try again");
+                $("#response").show();
+            }
+        });
+    }
+  </script>
+</head>
+<body>
+<h1 id="info"> Sample Text </h1>
+<label for="pwd">Password:</label>
+<input type="password" id="pwd" name="pwd">
+<button type="button" onclick="check_pwd()" id="but">Enter</button>
+<br/>
+<br/>
+<img src="sad_face.jpg" alt="Sad" id="sad" hidden>
+<img src="shrug.jpg" alt="shrug" id="shrug" hidden>
+<h2 id="response" hidden> Try again </h2>
+</body>
